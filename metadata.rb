@@ -1,12 +1,12 @@
 name 'supermarket'
-version '3.1.0'
+version '3.3.0'
 maintainer 'Chef Software, Inc.'
-maintainer_email 'cookbooks@getchef.com'
+maintainer_email 'cookbooks@chef.io'
 license 'Apache v2.0'
 description 'Stands up the Supermarket application stack'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 
-%w(yum apt build-essential python nodejs postgresql redisio git nginx runit rubies packagecloud).each do |dep|
+%w(yum apt build-essential chef-vault python nodejs postgresql redisio git nginx runit rubies packagecloud).each do |dep|
   depends dep
 end
 
@@ -20,7 +20,7 @@ recipe 'supermarket::vagrant',
        'Installs Supermarket and all dependencies for development'
 
 provides 'service[nginx]'
-provides 'service[postgres]'
+provides 'service[postgresql]'
 provides 'service[redis-server]'
 provides 'service[unicorn]'
 
@@ -36,10 +36,10 @@ attribute 'postgres/database',
           :type         => 'string',
           :default      => 'supermarket_production'
 
-attribute 'postgres/auth_method',
-          :display_name => 'PostgreSQL authentication method',
+attribute 'postgresql/version',
+          :display_name => 'PostgreSQL server version',
           :type         => 'string',
-          :default      => 'peer'
+          :default      => '9.3'
 
 grouping 'redis', :title => 'Redis server options'
 

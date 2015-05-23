@@ -1,3 +1,25 @@
+v3.3.0 (2015-05-18)
+-------------------
+- [#96] Use the chef\_vault\_item helper
+- [#95] Use CentOS 6.6 in Test Kitchen
+
+v3.2.1 (2015-04-22)
+-------------------
+- [#94] Remove references to \_git recipe
+- [#93] Use correct user in PostgreSQL recipe guards
+- [#92] Fix double quotes in required attributes error message
+- [#91] Enable pgdg Apt repo; remove duplicate kitchen attributes
+
+v3.2.0 (2015-04-17)
+-------------------
+- [#90] Fix compatibility with RHEL/CentOS 6
+- [#89] Fix psql commands in PostgreSQL recipe
+- [#87] Use the correct `X-Forwarded-Proto` headers in Nginx
+- [#86] Fix PostgreSQL attribute names
+- [#85] Include postgresql-contrib package including pg\_tgrm
+- [#84] Use correct exit codes for `psql` commands
+- [#83] Use HTTPS URLs in Berksfile for firewall friendliness
+
 v3.1.0 (2014-12-17)
 -------------------
 - [#82] Add a supermarket_instance resource

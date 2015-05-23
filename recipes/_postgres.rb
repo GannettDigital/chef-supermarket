@@ -18,32 +18,33 @@
 #
 
 include_recipe 'postgresql::server'
+include_recipe 'postgresql::contrib'
 
 execute 'postgres[user]' do
   user 'postgres'
-  command "echo 'CREATE ROLE #{node['postgres']['user']} WITH LOGIN;' | psql"
-  not_if  "echo 'SELECT 1 FROM pg_roles WHERE rolname = \'#{node['postgres']['user']}\';' | psql | grep -q 1"
+  command "psql -c 'CREATE ROLE #{node['postgres']['user']} WITH LOGIN;'"
+  not_if  "psql -c \"SELECT 1 FROM pg_roles WHERE rolname = \'#{node['postgres']['user']}\';\" | grep -q 1", :user => 'postgres'
 end
 
 execute 'postgres[database]' do
   user 'postgres'
-  command "echo 'CREATE DATABASE #{node['postgres']['database']};' | psql"
-  not_if  "echo 'SELECT 1 FROM pg_database WHERE datname = \'#{node['postgres']['database']}\';' | psql | grep -q 1"
+  command "psql -c 'CREATE DATABASE #{node['postgres']['database']};'"
+  not_if  "psql -c \"SELECT 1 FROM pg_database WHERE datname = \'#{node['postgres']['database']}\';\" | grep -q 1", :user => 'postgres'
 end
 
 execute 'postgres[privileges]' do
   user 'postgres'
-  command "echo 'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA #{node['postgres']['database']} TO #{node['postgres']['user']};' | psql"
+  command "psql -c 'GRANT ALL ON DATABASE #{node['postgres']['database']} TO #{node['postgres']['user']};'"
 end
 
 execute 'postgres[extensions][plpgsql]' do
   user 'postgres'
-  command "echo 'CREATE EXTENSION IF NOT EXISTS plpgsql' | psql"
-  not_if "echo '\dx' | psql #{node['postgres']['database']} | grep plpgsql"
+  command "psql -c 'CREATE EXTENSION IF NOT EXISTS plpgsql'"
+  not_if "echo '\dx' | psql #{node['postgres']['database']} | grep plpgsql", :user => 'postgres'
 end
 
 execute 'postgres[extensions][pg_trgm]' do
   user 'postgres'
-  command "echo 'CREATE EXTENSION IF NOT EXISTS pg_trgm' | psql"
-  not_if "echo '\dx' | psql #{node['postgres']['database']} | grep pg_trgm"
+  command "psql -c 'CREATE EXTENSION IF NOT EXISTS pg_trgm'"
+  not_if "echo '\dx' | psql #{node['postgres']['database']} | grep pg_trgm", :user => 'postgres'
 end

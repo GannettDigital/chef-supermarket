@@ -20,10 +20,7 @@ platforms:
   - name: ubuntu-14.04
     run_list:
     - recipe[apt]
-    attributes:
-      postgres:
-        version: "9.3"
-  - name: centos-6.5
+  - name: centos-6.6
     run_list:
       - recipe[yum]
 
@@ -33,7 +30,5 @@ suites:
     run_list:
       - recipe[supermarket::default]
     attributes:
-      postgres:
-        auth_method: trust
       nginx:
         default_site_enabled: false

@@ -37,9 +37,8 @@ directory "#{node['supermarket']['home']}/shared/bundle" do
 end
 
 if node['supermarket']['chef_vault']
-  chef_gem 'chef-vault'
-  require 'chef-vault'
-  app = ChefVault::Item.load(:apps, node['supermarket']['data_bag'])
+  include_recipe 'chef-vault'
+  app = chef_vault_item(:apps, node['supermarket']['data_bag'])
 else
   app = data_bag_item(:apps, node['supermarket']['data_bag'])
 end
@@ -91,6 +90,14 @@ deploy_revision node['supermarket']['home'] do
 
     template "#{release_path}/config/database.yml" do
       variables(app: app)
+    end
+
+    execute 'bundle config for pg' do
+      cwd release_path
+      user 'supermarket'
+      group 'supermarket'
+      command "bundle config --local build.pg --with-pg-config=/usr/pgsql-#{node['postgresql']['version']}/bin/pg_config"
+      only_if { node['platform_family'] == 'rhel' && node['postgresql']['enable_pgdg_yum'] }
     end
 
     execute 'bundle install' do
